@@ -31,8 +31,18 @@ local OrionLib = {
 local Icons = {}
 
 local Success, Response = pcall(function()
-	Icons = HttpService:JSONDecode(game:HttpGetAsync("https://raw.githubusercontent.com/evoincorp/lucideblox/master/src/modules/util/icons.json")).icons
+    if game.HttpGetAsync then -- only run if available
+        local raw = game:HttpGetAsync("https://raw.githubusercontent.com/evoincorp/lucideblox/master/src/modules/util/icons.json")
+        if raw then
+            Icons = HttpService:JSONDecode(raw).icons
+        end
+    end
 end)
+
+if not Success then
+    Icons = {}  -- fallback to empty icons table
+    warn("\nOrion Library - Failed to load Feather Icons. Error code: " .. tostring(Response) .. "\n")
+end	
 
 if not Success then
 	warn("\nOrion Library - Failed to load Feather Icons. Error code: " .. Response .. "\n")
